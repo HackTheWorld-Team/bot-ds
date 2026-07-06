@@ -1,0 +1,8 @@
+#Variables secretas
+.env
+
+#Entorno virtual
+venv/
+
+#Archivos temporales de python
+*.pyc
