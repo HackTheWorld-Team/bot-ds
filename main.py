@@ -1,9 +1,15 @@
 import os
+import logging
 
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+logging.basicConfig(
+    filename="logs/atlas.log",
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
 
 # Variables guardadas
 load_dotenv()
@@ -61,6 +67,8 @@ async def on_ready():
     await bot.tree.sync(guild=guild)
     print("Comandos slash sincronizados correctamente.")
     print(f"Bot conectado como {bot.user}")
+logging.info("Comandos slash sincronizados correctamente.")
+logging.info(f"Bot conectado como {bot.user}")
 
 
 if discord_token is None:

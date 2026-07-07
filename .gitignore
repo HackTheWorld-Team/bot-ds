@@ -1,8 +1,12 @@
-#Variables secretas
+# Variables secretas
 .env
 
-#Entorno virtual
+# Entorno virtual
 venv/
 
-#Archivos temporales de python
+# Archivos temporales de Python
+__pycache__/
 *.pyc
+
+# Archivos de logs
+logs/
