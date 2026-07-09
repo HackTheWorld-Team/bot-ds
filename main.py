@@ -5,6 +5,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from database import init_database
+
 logging.basicConfig(
     filename="logs/atlas.log",
     level=logging.INFO,
@@ -13,6 +15,8 @@ logging.basicConfig(
 
 # Variables guardada
 load_dotenv()
+
+init_database()
 
 discord_token = os.getenv("DISCORD_TOKEN")
 discord_guild_id = os.getenv("DISCORD_GUILD_ID")
