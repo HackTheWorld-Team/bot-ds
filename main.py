@@ -11,7 +11,7 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
-# Variables guardadas
+# Variables guardada
 load_dotenv()
 
 discord_token = os.getenv("DISCORD_TOKEN")
