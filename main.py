@@ -1,9 +1,14 @@
-import os
 import logging
 
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
+
+
+import settings
+print(
+    "Token cargado desde settings:",
+    bool(settings.discord_token)
+)
 
 from database import(
     get_system_record,
@@ -18,8 +23,6 @@ logging.basicConfig(
 )
 
 # Variables guardada
-load_dotenv()
-
 init_database()
 
 #Actualizaciones del bot
@@ -29,13 +32,9 @@ print(f"Versión guardada en la base de datos: {bot_version}")
 logging.info(f"Versión de ATLAS cargada: {bot_version}")
 
 
-#Os.getenv para conexion
-discord_token = os.getenv("DISCORD_TOKEN")
-discord_guild_id = os.getenv("DISCORD_GUILD_ID")
-github_url = os.getenv("GITHUB_URL")
-
-
-guild = discord.Object(id=int(discord_guild_id))
+guild = discord.Object(
+    id=int(settings.discord_guild_id)
+)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -50,7 +49,7 @@ bot = commands.Bot(command_prefix="$", intents=intents)
 @discord.app_commands.guilds(guild)
 async def github(interaction: discord.Interaction):
     await interaction.response.send_message(
-        f"💻 Repositorio oficial de ATLAS:\n{github_url}"
+        f"💻 Repositorio oficial de ATLAS:\n{settings.github_url}"
     )
 
 
@@ -87,9 +86,8 @@ logging.info("Comandos slash sincronizados correctamente.")
 logging.info(f"Bot conectado como {bot.user}")
 
 
-if discord_token is None:
-    print(
-        "Error: No se encontró el token de Discord."
+if settings.discord_token is None:
+    print("Error: No se encontró el token de Discord."
     )
 else:
-    bot.run(discord_token)
+    bot.run(settings.discord_token)
