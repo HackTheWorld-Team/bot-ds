@@ -5,6 +5,7 @@ from discord.ext import commands
 
 
 import settings
+settings.validate_settings()
 print(
     "Token cargado desde settings:",
     bool(settings.discord_token)
