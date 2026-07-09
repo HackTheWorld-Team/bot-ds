@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, create_engine
+from sqlalchemy import Integer, String, create_engine, select
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -6,9 +6,10 @@ from sqlalchemy.orm import (
     sessionmaker
 )
 
-DATABASE_URL = "sqlite:///atlas.db"
+
 class Base(DeclarativeBase):
     pass
+
 
 class SystemRecord(Base):
     __tablename__ = "system_records"
@@ -29,10 +30,55 @@ class SystemRecord(Base):
         nullable=False
     )
 
+DATABASE_URL = "sqlite:///atlas.db"
+
 engine = create_engine(DATABASE_URL)
+
 SessionLocal = sessionmaker(
-    bind= engine
+    bind=engine
 )
+
 
 def init_database():
     Base.metadata.create_all(bind=engine)
+
+
+def set_system_record(key: str, value: str) -> None:
+    with SessionLocal() as db:
+        record = db.scalar(
+            select(SystemRecord).where(SystemRecord.key == key)
+        )
+
+        if record is None:
+            record = SystemRecord(
+                key=key,
+                value=value
+            )
+            db.add(record)
+        else:
+            record.value = value
+
+        db.commit()
+
+
+def get_system_record(key: str) -> str | None:
+    with SessionLocal() as db:
+        record = db.scalar(
+            select(SystemRecord).where(SystemRecord.key == key)
+        )
+
+        if record is None:
+            return None
+
+        return record.value
+
+def get_system_record(key: str) -> str | None:
+    with SessionLocal() as db:
+        record = db.scalar(
+            select(SystemRecord).where(SystemRecord.key == key)
+        )
+
+        if record is None:
+            return None
+
+        return record.value

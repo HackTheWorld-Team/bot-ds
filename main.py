@@ -5,7 +5,11 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from database import init_database
+from database import(
+    get_system_record,
+    init_database,
+    set_system_record,
+)
 
 logging.basicConfig(
     filename="logs/atlas.log",
@@ -18,6 +22,14 @@ load_dotenv()
 
 init_database()
 
+#Actualizaciones del bot
+bot_version = get_system_record("bot_version")
+
+print(f"Versión guardada en la base de datos: {bot_version}")
+logging.info(f"Versión de ATLAS cargada: {bot_version}")
+
+
+#Os.getenv para conexion
 discord_token = os.getenv("DISCORD_TOKEN")
 discord_guild_id = os.getenv("DISCORD_GUILD_ID")
 github_url = os.getenv("GITHUB_URL")
