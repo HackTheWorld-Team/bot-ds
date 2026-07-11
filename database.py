@@ -3,7 +3,7 @@ from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
     mapped_column,
-    sessionmaker
+    sessionmaker,
 )
 
 
@@ -30,6 +30,7 @@ class SystemRecord(Base):
         nullable=False
     )
 
+
 DATABASE_URL = "sqlite:///atlas.db"
 
 engine = create_engine(DATABASE_URL)
@@ -39,14 +40,19 @@ SessionLocal = sessionmaker(
 )
 
 
-def init_database():
+def init_database() -> None:
+    # Se importa aquí para evitar una importación circular.
+    from events import Event  # noqa: F401
+
     Base.metadata.create_all(bind=engine)
 
 
 def set_system_record(key: str, value: str) -> None:
     with SessionLocal() as db:
         record = db.scalar(
-            select(SystemRecord).where(SystemRecord.key == key)
+            select(SystemRecord).where(
+                SystemRecord.key == key
+            )
         )
 
         if record is None:
@@ -64,18 +70,9 @@ def set_system_record(key: str, value: str) -> None:
 def get_system_record(key: str) -> str | None:
     with SessionLocal() as db:
         record = db.scalar(
-            select(SystemRecord).where(SystemRecord.key == key)
-        )
-
-        if record is None:
-            return None
-
-        return record.value
-
-def get_system_record(key: str) -> str | None:
-    with SessionLocal() as db:
-        record = db.scalar(
-            select(SystemRecord).where(SystemRecord.key == key)
+            select(SystemRecord).where(
+                SystemRecord.key == key
+            )
         )
 
         if record is None:
