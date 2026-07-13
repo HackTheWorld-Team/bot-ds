@@ -2,6 +2,7 @@ import logging
 
 import discord
 from discord.ext import commands
+from events import save_event
 
 
 import settings
@@ -26,11 +27,13 @@ logging.basicConfig(
 # Variables guardada
 init_database()
 
-#Actualizaciones del bot
+
+# Actualizaciones del bot
 bot_version = get_system_record("bot_version")
 
 print(f"Versión guardada en la base de datos: {bot_version}")
 logging.info(f"Versión de ATLAS cargada: {bot_version}")
+
 
 
 guild = discord.Object(
