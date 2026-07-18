@@ -12,7 +12,7 @@ print(
     bool(settings.discord_token)
 )
 
-from database import(
+from bot.database.database import(
     get_system_record,
     init_database,
     set_system_record,
@@ -29,6 +29,7 @@ init_database()
 
 
 # Actualizaciones del bot
+set_system_record("bot_version", "0.1.0")
 bot_version = get_system_record("bot_version")
 
 print(f"Versión guardada en la base de datos: {bot_version}")

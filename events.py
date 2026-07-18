@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, DateTime, Integer, String, select
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database import Base
+from bot.database.database import Base
 
 
 class Event(Base):
@@ -72,7 +72,7 @@ def save_event(
     end_time: datetime,
     organizer_id: int
 ) -> None:
-    from database import SessionLocal
+    from bot.database.database import SessionLocal
 
     with SessionLocal() as db:
         existing_event = db.scalar(
