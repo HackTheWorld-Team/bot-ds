@@ -5,7 +5,7 @@ from discord.ext import commands
 from events import save_event
 
 
-import settings
+from bot.config import settings
 settings.validate_settings()
 print(
     "Token cargado desde settings:",
