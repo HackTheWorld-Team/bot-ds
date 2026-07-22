@@ -22,7 +22,7 @@ def save_event(
         )
 
         if existing_event is None:
-            event = Event(
+            existing_event = Event(
                 discord_event_id=discord_event_id,
                 name=name,
                 description=description,
@@ -31,5 +31,12 @@ def save_event(
                 organizer_id=organizer_id,
             )
 
-            db.add(event)
-            db.commit()
+            db.add(existing_event)
+        else:
+            existing_event.name = name
+            existing_event.description = description
+            existing_event.start_time = start_time
+            existing_event.end_time = end_time
+            existing_event.organizer_id = organizer_id
+
+        db.commit()
