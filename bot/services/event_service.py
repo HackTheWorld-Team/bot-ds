@@ -40,3 +40,21 @@ def save_event(
             existing_event.organizer_id = organizer_id
 
         db.commit()
+def update_event_status(
+    discord_event_id: int,
+    status: str,
+) -> bool:
+    with SessionLocal() as db:
+        event = db.scalar(
+            select(Event).where(
+                Event.discord_event_id == discord_event_id
+            )
+        )
+
+        if event is None:
+            return False
+
+        event.status = status
+        db.commit()
+
+        return True
