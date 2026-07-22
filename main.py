@@ -2,7 +2,7 @@ import logging
 
 import discord
 from discord.ext import commands
-from bot.models.events import save_event
+from bot.services.event_service import save_event
 
 
 from bot.config import settings

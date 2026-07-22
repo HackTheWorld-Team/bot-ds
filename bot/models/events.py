@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Integer, String, select
+from sqlalchemy import Boolean, DateTime, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from bot.database.database import Base
@@ -62,34 +62,3 @@ class Event(Base):
         nullable=False,
         default=False
     )
-
-
-def save_event(
-    discord_event_id: int,
-    name: str,
-    description: str | None,
-    start_time: datetime,
-    end_time: datetime,
-    organizer_id: int
-) -> None:
-    from bot.database.database import SessionLocal
-
-    with SessionLocal() as db:
-        existing_event = db.scalar(
-            select(Event).where(
-                Event.discord_event_id == discord_event_id
-            )
-        )
-
-        if existing_event is None:
-            event = Event(
-                discord_event_id=discord_event_id,
-                name=name,
-                description=description,
-                start_time=start_time,
-                end_time=end_time,
-                organizer_id=organizer_id
-            )
-
-            db.add(event)
-            db.commit()
