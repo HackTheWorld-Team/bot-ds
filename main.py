@@ -3,6 +3,7 @@ import logging
 import discord
 from discord.ext import commands
 from bot.services.event_service import save_event
+from bot.cogs.events import EventsCog
 
 
 from bot.config import settings
@@ -43,6 +44,7 @@ guild = discord.Object(
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.guild_scheduled_events = True 
 
 bot = commands.Bot(command_prefix="$", intents=intents)
 
@@ -84,11 +86,17 @@ async def ayuda(interaction: discord.Interaction):
 
 @bot.event
 async def on_ready():
+    if bot.get_cog("EventsCog") is None:
+        await bot.add_cog(EventsCog(bot))
+        print("Módulo de eventos cargado correctamente.")
+
     await bot.tree.sync(guild=guild)
+
     print("Comandos slash sincronizados correctamente.")
     print(f"Bot conectado como {bot.user}")
-logging.info("Comandos slash sincronizados correctamente.")
-logging.info(f"Bot conectado como {bot.user}")
+
+    logging.info("Comandos slash sincronizados correctamente.")
+    logging.info(f"Bot conectado como {bot.user}")
 
 
 if settings.discord_token is None:
