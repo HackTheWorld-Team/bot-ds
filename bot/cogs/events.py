@@ -57,3 +57,7 @@ class EventsCog(commands.Cog):
                 f"No se encontró el evento eliminado en la base de datos: "
                 f"{event.name}"
             )
+
+
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(EventsCog(bot))

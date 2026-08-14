@@ -2,9 +2,6 @@ import logging
 
 import discord
 from discord.ext import commands
-from bot.services.event_service import save_event
-from bot.cogs.events import EventsCog
-
 
 from bot.config import settings
 settings.validate_settings()
@@ -49,53 +46,20 @@ intents.guild_scheduled_events = True
 bot = commands.Bot(command_prefix="$", intents=intents)
 
 
-@bot.tree.command(
-    name="github",
-    description="Muestra el repositorio oficial de ATLAS"
-)
-@discord.app_commands.guilds(guild)
-async def github(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        f"💻 Repositorio oficial de ATLAS:\n{settings.github_url}"
-    )
-
-
-@bot.tree.command(
-    name="ping",
-    description="Comprueba si ATLAS está funcionando"
-)
-@discord.app_commands.guilds(guild)
-async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        "🟢 ATLAS está funcionando correctamente."
-    )
-
-@bot.tree.command(
-        name="ayuda",
-        description="Muestra los comandos disponibles de ATLAS"
-)
-@discord.app_commands.guilds(guild)
-async def ayuda(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        "🤖 **ATLAS - Comandos disponibles**\n\n"
-        "🟢 `/ping` - Comprueba si ATLAS está funcionando\n"
-        "💻 `/github` - Muestra el repositorio oficial de la comunidad\n"
-        "❓ `/ayuda` - Muestra esta lista de comandos"
-    )
-
-
 @bot.event
-async def on_ready():
-    if bot.get_cog("EventsCog") is None:
-        await bot.add_cog(EventsCog(bot))
-        print("Módulo de eventos cargado correctamente.")
+async def setup_hook() -> None:
+    await bot.load_extension("bot.cogs.general")
+    await bot.load_extension("bot.cogs.events")
 
     await bot.tree.sync(guild=guild)
 
     print("Comandos slash sincronizados correctamente.")
-    print(f"Bot conectado como {bot.user}")
-
     logging.info("Comandos slash sincronizados correctamente.")
+
+
+@bot.event
+async def on_ready() -> None:
+    print(f"Bot conectado como {bot.user}")
     logging.info(f"Bot conectado como {bot.user}")
 
 
