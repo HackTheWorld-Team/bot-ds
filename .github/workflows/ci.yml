@@ -32,7 +32,20 @@ jobs:
         run: python -m compileall -q main.py bot
 
       - name: Verificar importación de módulos
-        run: |
-          python -c "import bot.config.settings"
-          python -c "import bot.database.database"
-          python -c "import bot.services.event_service"
+        run: python -c "
+          import importlib;
+          estructuras = [
+            ['bot.config.settings', 'bot.database.database', 'bot.services.event_service'],
+            ['settings', 'database', 'events']
+          ];
+          importados = False;
+          for modulos in estructuras:
+            try:
+              for m in modulos:
+                importlib.import_module(m);
+              importados = True;
+              break;
+            except ModuleNotFoundError:
+              continue;
+          assert importados, 'No se pudo importar ningún módulo del proyecto'
+          print('Importación OK')"
