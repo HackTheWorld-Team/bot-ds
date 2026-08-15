@@ -1,15 +1,46 @@
-# Variables secretas
+# Variables secretas — nunca trackear tokens ni claves
 .env
+.env.*
+!.env.example
+
+# Claves privadas y certificados
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.ovpn
+secrets.*
+credentials.*
 
 # Entorno virtual
 venv/
+.virtualenv/
 
 # Archivos temporales de Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
 
 # Archivos de logs
 logs/
+*.log
 
-#Base de datos Local
+# Base de datos local
 atlas.db
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

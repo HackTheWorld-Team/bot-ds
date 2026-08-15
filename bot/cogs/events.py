@@ -1,9 +1,11 @@
 import discord
 from discord.ext import commands
+
 from bot.services.event_service import (
     save_event,
     update_event_status,
 )
+
 
 class EventsCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
