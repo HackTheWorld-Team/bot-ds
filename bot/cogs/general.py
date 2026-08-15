@@ -18,8 +18,6 @@ COMANDO_EMOJIS: dict[str, str] = {
 
 
 class GeneralCog(commands.Cog):
-    """Comandos generales de ATLAS."""
-
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
