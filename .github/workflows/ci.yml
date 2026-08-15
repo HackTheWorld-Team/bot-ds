@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   secrets:
-    name: Detección de secretos (gitleaks)
+    name: secrets
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del repositorio
@@ -28,7 +28,7 @@ jobs:
           ./gitleaks detect --source . --config .gitleaks.toml --redact --verbose
 
   quality:
-    name: Calidad y análisis de seguridad (ruff + bandit)
+    name: quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del repositorio
@@ -56,7 +56,7 @@ jobs:
         run: bandit -q -r bot main.py -f txt
 
   dependencias:
-    name: Auditoría de dependencias (pip-audit)
+    name: dependencias
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del repositorio
