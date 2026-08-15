@@ -31,7 +31,7 @@ init_database()
 
 # Actualizaciones del bot
 set_system_record("bot_version", "0.1.0")
-bot_version = get_system_record("bot_version")
+bot_version = get_system_record("bot_version") or "0.0.0"
 
 print(f"Versión guardada en la base de datos: {bot_version}")
 logger.info(f"Versión de ATLAS cargada: {bot_version}")
