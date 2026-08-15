@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Lint y pruebas
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verificar sintaxis del código
+        run: python -m compileall -q main.py bot
+
+      - name: Verificar importación de módulos
+        run: |
+          python - <<'EOF'
+          import importlib
+
+          estructuras = [
+              ["bot.config.settings", "bot.database.database", "bot.services.event_service"],
+              ["settings", "database", "events"],
+          ]
+
+          for modulos in estructuras:
+              try:
+                  for m in modulos:
+                      importlib.import_module(m)
+                  print("Importación OK")
+                  break
+              except ModuleNotFoundError:
+                  continue
+          else:
+              raise SystemExit("No se pudo importar ningún módulo del proyecto")
+          EOF
