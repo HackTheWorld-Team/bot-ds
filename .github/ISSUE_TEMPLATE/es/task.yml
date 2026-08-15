@@ -1,0 +1,57 @@
+name: Tarea
+description: Tarea de implementacion con alcance acotado
+title: "[Tarea] "
+labels: ["ready-to-implement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tarea con alcance atomico (1-2 criterios de aceptacion) apta para
+        implementacion autonoma.
+        _Plantilla en español._
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto
+      description: Problema que resuelve o hace falta.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Alcance / Solucion
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de Aceptacion
+      description: Maximo 2 para manejo autonomo.
+    validations:
+      required: true
+
+  - type: input
+    id: validation
+    attributes:
+      label: Validacion
+      description: Comando o pasos para verificar.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - API / Backend
+        - Frontend / UI
+        - CI / DevOps
+        - Documentacion
+        - Seguridad
+        - Rendimiento
+        - Otro
+    validations:
+      required: true

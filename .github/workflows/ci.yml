@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: Detección de secretos (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Escanear secretos en el código e historial
+        uses: gitleaks/gitleaks-action@v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  quality:
+    name: Calidad y análisis de seguridad (ruff + bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Instalar dependencias y herramientas de análisis
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff bandit
+
+      - name: Verificar sintaxis del código
+        run: python -m compileall -q main.py bot
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Análisis estático de seguridad (bandit)
+        run: bandit -q -r bot main.py -f txt
+
+  dependencias:
+    name: Auditoría de dependencias (pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Instalar pip-audit
+        run: python -m pip install --upgrade pip pip-audit
+
+      - name: Auditar dependencias vulnerables
+        run: pip-audit -r requirements.txt
