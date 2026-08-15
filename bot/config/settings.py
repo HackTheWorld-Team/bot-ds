@@ -17,6 +17,10 @@ def validate_settings():
         raise ValueError(
             "Falta DISCORD_GUILD_ID en el archivo .env"
         )
+    if not discord_guild_id.isdigit():
+        raise ValueError(
+            "DISCORD_GUILD_ID debe ser un número entero (ID del servidor de Discord)."
+        )
     if github_url is None:
         raise ValueError(
             "Falta GITHUB_URL en el archivo .env"
