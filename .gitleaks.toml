@@ -1,0 +1,20 @@
+# Configuración de gitleaks para ATLAS.
+# Bloquea commits/pushes que contengan secretos reales.
+
+title = "ATLAS gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Valores de ejemplo y documentación permitidos (no son secretos reales)"
+regexes = [
+  '''TU_TOKEN_AQUI''',
+  '''TU_TOKEN_REAL''',
+  '''TU_ID_DE_SERVIDOR_AQUI''',
+  '''TU_ID_DE_SERVIDOR''',
+]
+paths = [
+  '''\.env\.example$''',
+  '''README\.md$''',
+]

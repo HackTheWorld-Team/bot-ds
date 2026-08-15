@@ -2,17 +2,18 @@ import logging
 
 import discord
 from discord.ext import commands
-from events import save_event
 
+from bot.config import settings
 
-import settings
+logger = logging.getLogger("atlas")
+
 settings.validate_settings()
 print(
     "Token cargado desde settings:",
     bool(settings.discord_token)
 )
 
-from database import(
+from bot.database.database import (
     get_system_record,
     init_database,
     set_system_record,
@@ -29,10 +30,11 @@ init_database()
 
 
 # Actualizaciones del bot
+set_system_record("bot_version", "0.1.0")
 bot_version = get_system_record("bot_version")
 
 print(f"Versión guardada en la base de datos: {bot_version}")
-logging.info(f"Versión de ATLAS cargada: {bot_version}")
+logger.info(f"Versión de ATLAS cargada: {bot_version}")
 
 
 
@@ -42,52 +44,26 @@ guild = discord.Object(
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.guild_scheduled_events = True 
 
 bot = commands.Bot(command_prefix="$", intents=intents)
 
 
-@bot.tree.command(
-    name="github",
-    description="Muestra el repositorio oficial de ATLAS"
-)
-@discord.app_commands.guilds(guild)
-async def github(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        f"💻 Repositorio oficial de ATLAS:\n{settings.github_url}"
-    )
+@bot.event
+async def setup_hook() -> None:
+    await bot.load_extension("bot.cogs.general")
+    await bot.load_extension("bot.cogs.events")
 
+    await bot.tree.sync(guild=guild)
 
-@bot.tree.command(
-    name="ping",
-    description="Comprueba si ATLAS está funcionando"
-)
-@discord.app_commands.guilds(guild)
-async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        "🟢 ATLAS está funcionando correctamente."
-    )
-
-@bot.tree.command(
-        name="ayuda",
-        description="Muestra los comandos disponibles de ATLAS"
-)
-@discord.app_commands.guilds(guild)
-async def ayuda(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        "🤖 **ATLAS - Comandos disponibles**\n\n"
-        "🟢 `/ping` - Comprueba si ATLAS está funcionando\n"
-        "💻 `/github` - Muestra el repositorio oficial de la comunidad\n"
-        "❓ `/ayuda` - Muestra esta lista de comandos"
-    )
+    print("Comandos slash sincronizados correctamente.")
+    logger.info("Comandos slash sincronizados correctamente.")
 
 
 @bot.event
-async def on_ready():
-    await bot.tree.sync(guild=guild)
-    print("Comandos slash sincronizados correctamente.")
+async def on_ready() -> None:
     print(f"Bot conectado como {bot.user}")
-logging.info("Comandos slash sincronizados correctamente.")
-logging.info(f"Bot conectado como {bot.user}")
+    logger.info(f"Bot conectado como {bot.user}")
 
 
 if settings.discord_token is None:

@@ -42,7 +42,7 @@ SessionLocal = sessionmaker(
 
 def init_database() -> None:
     # Se importa aquí para evitar una importación circular.
-    from events import Event  # noqa: F401
+    from bot.models.events import Event  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
 
