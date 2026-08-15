@@ -66,8 +66,12 @@ async def on_ready() -> None:
     logger.info(f"Bot conectado como {bot.user}")
 
 
-if settings.discord_token is None:
-    print("Error: No se encontró el token de Discord."
-    )
-else:
+def main() -> None:
+    if settings.discord_token is None:
+        print("Error: No se encontró el token de Discord.")
+        return
     bot.run(settings.discord_token)
+
+
+if __name__ == "__main__":
+    main()
