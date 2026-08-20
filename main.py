@@ -1,4 +1,6 @@
 import logging
+import os
+from logging.handlers import RotatingFileHandler
 
 import discord
 from discord.ext import commands
@@ -7,22 +9,42 @@ from bot.config import settings
 
 logger = logging.getLogger("atlas")
 
+LOG_DIR = "logs"
+LOG_FILE = os.path.join(LOG_DIR, "atlas.log")
+LOG_MAX_BYTES = 5 * 1024 * 1024
+LOG_BACKUP_COUNT = 5
+
+
+def configure_logging() -> None:
+    os.makedirs(LOG_DIR, exist_ok=True)
+
+    handler = RotatingFileHandler(
+        LOG_FILE,
+        maxBytes=LOG_MAX_BYTES,
+        backupCount=LOG_BACKUP_COUNT,
+        encoding="utf-8",
+    )
+    handler.setFormatter(
+        logging.Formatter(
+            "%(asctime)s | %(levelname)s | %(message)s"
+        )
+    )
+
+    logging.basicConfig(
+        level=logging.INFO,
+        handlers=[handler],
+    )
+
+
 settings.validate_settings()
-print(
-    "Token cargado desde settings:",
-    bool(settings.discord_token)
-)
+configure_logging()
+
+logger.info("Token cargado desde settings: %s", bool(settings.discord_token))
 
 from bot.database.database import (
     get_system_record,
     init_database,
     set_system_record,
-)
-
-logging.basicConfig(
-    filename="logs/atlas.log",
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
 # Variables guardada
@@ -33,8 +55,7 @@ init_database()
 set_system_record("bot_version", "0.1.0")
 bot_version = get_system_record("bot_version")
 
-print(f"Versión guardada en la base de datos: {bot_version}")
-logger.info(f"Versión de ATLAS cargada: {bot_version}")
+logger.info("Versión de ATLAS cargada: %s", bot_version)
 
 
 
@@ -56,19 +77,17 @@ async def setup_hook() -> None:
 
     await bot.tree.sync(guild=guild)
 
-    print("Comandos slash sincronizados correctamente.")
     logger.info("Comandos slash sincronizados correctamente.")
 
 
 @bot.event
 async def on_ready() -> None:
-    print(f"Bot conectado como {bot.user}")
-    logger.info(f"Bot conectado como {bot.user}")
+    logger.info("Bot conectado como %s", bot.user)
 
 
 def main() -> None:
     if settings.discord_token is None:
-        print("Error: No se encontró el token de Discord.")
+        logger.error("Error: No se encontró el token de Discord.")
         return
     bot.run(settings.discord_token)
 

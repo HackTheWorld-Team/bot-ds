@@ -1,3 +1,5 @@
+import logging
+
 import discord
 from discord.ext import commands
 
@@ -5,6 +7,8 @@ from bot.services.event_service import (
     save_event,
     update_event_status,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class EventsCog(commands.Cog):
@@ -24,7 +28,7 @@ class EventsCog(commands.Cog):
             end_time=event.end_time or event.start_time,
             organizer_id=event.creator_id or 0,
         )
-        print(f"Nuevo evento guardado: {event.name}")
+        logger.info("Nuevo evento guardado: %s", event.name)
 
     @commands.Cog.listener()
     async def on_scheduled_event_update(
@@ -40,7 +44,7 @@ class EventsCog(commands.Cog):
             end_time=after.end_time or after.start_time,
             organizer_id=after.creator_id or 0,
         )
-        print(f"Evento actualizado: {after.name}")
+        logger.info("Evento actualizado: %s", after.name)
 
     @commands.Cog.listener()
     async def on_scheduled_event_delete(
@@ -53,11 +57,11 @@ class EventsCog(commands.Cog):
         )
 
         if updated:
-            print(f"Evento cancelado: {event.name}")
+            logger.info("Evento cancelado: %s", event.name)
         else:
-            print(
-                f"No se encontró el evento eliminado en la base de datos: "
-                f"{event.name}"
+            logger.warning(
+                "No se encontró el evento eliminado en la base de datos: %s",
+                event.name,
             )
 
 
