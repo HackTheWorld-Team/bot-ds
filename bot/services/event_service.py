@@ -58,3 +58,22 @@ def update_event_status(
         db.commit()
 
         return True
+
+
+def list_events() -> list[dict]:
+    with SessionLocal() as db:
+        events = db.scalars(
+            select(Event).order_by(Event.start_time.desc())
+        ).all()
+
+        return [
+            {
+                "name": event.name,
+                "description": event.description,
+                "start_time": event.start_time.isoformat(),
+                "end_time": event.end_time.isoformat(),
+                "organizer_id": event.organizer_id,
+                "status": event.status,
+            }
+            for event in events
+        ]
